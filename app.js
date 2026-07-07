@@ -94,3 +94,20 @@ else {
     })
     .catch(_useBaked);
 }
+
+
+/* ===== 加好友阻擋視窗（A方案：非好友才顯示；整張圖點擊→加好友，置中暗背景）===== */
+(function(){
+  var FRIEND_URL="https://tcbs.tw/gDTmm";
+  var IMG="https://res.cloudinary.com/dneuq3mpl/image/upload/f_auto,q_auto,w_880/v1779772840/%E5%8A%A0%E5%A5%BD%E5%8F%8B%E8%A7%A3%E9%8E%96V2_e3h5oq.png";
+  var force=/[?&]gate=1/.test(location.search);
+  if(!(window.DVYT_FRIEND===false || force)) return;
+  var css="#dvy-gate{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(20,16,12,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}"
+   +"#dvy-gate a{display:block;line-height:0;cursor:pointer;}"
+   +"#dvy-gate img{display:block;max-width:min(440px,92vw);max-height:88vh;width:auto;height:auto;box-shadow:0 20px 60px rgba(0,0,0,.4);}";
+  var st=document.createElement("style"); st.textContent=css; (document.head||document.documentElement).appendChild(st);
+  var ov=document.createElement("div"); ov.id="dvy-gate";
+  ov.innerHTML='<a href="'+FRIEND_URL+'" target="_blank" rel="noopener"><img src="'+IMG+'" alt="加入好友解鎖完整名單"></a>';
+  document.body.appendChild(ov);
+  document.documentElement.style.overflow="hidden"; document.body.style.overflow="hidden";
+})();
