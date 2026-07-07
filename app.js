@@ -102,12 +102,15 @@ else {
   var IMG="https://res.cloudinary.com/dneuq3mpl/image/upload/f_auto,q_auto,w_880/v1779772840/%E5%8A%A0%E5%A5%BD%E5%8F%8B%E8%A7%A3%E9%8E%96V2_e3h5oq.png";
   var force=/[?&]gate=1/.test(location.search);
   if(!(window.DVYT_FRIEND===false || force)) return;
-  var css="#dvy-gate{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(20,16,12,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}"
-   +"#dvy-gate a{display:block;line-height:0;cursor:pointer;}"
-   +"#dvy-gate img{display:block;max-width:min(440px,92vw);max-height:88vh;width:auto;height:auto;box-shadow:0 20px 60px rgba(0,0,0,.4);}";
+  var css="#dvy-gate{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto;background:rgba(20,16,12,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);font-family:'Noto Sans TC','Microsoft JhengHei',system-ui,sans-serif;}"
+   +"#dvy-gate .g-box{width:min(430px,92vw);display:flex;flex-direction:column;gap:12px;margin:auto;}"
+   +"#dvy-gate .g-imglink{display:block;line-height:0;cursor:pointer;}"
+   +"#dvy-gate .g-imglink img{display:block;width:100%;height:auto;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.4);}"
+   +"#dvy-gate a.g-btn{display:block;text-align:center;padding:15px;border-radius:12px;background:#06c755;color:#fff;font-weight:800;font-size:18px;text-decoration:none;box-shadow:0 8px 20px rgba(6,199,85,.35);letter-spacing:.03em;}"
+   +"#dvy-gate a.g-btn:hover{background:#05b64c;}";
   var st=document.createElement("style"); st.textContent=css; (document.head||document.documentElement).appendChild(st);
   var ov=document.createElement("div"); ov.id="dvy-gate";
-  ov.innerHTML='<a href="'+FRIEND_URL+'" target="_blank" rel="noopener"><img src="'+IMG+'" alt="加入好友解鎖完整名單"></a>';
+  ov.innerHTML='<div class="g-box"><a class="g-imglink" href="'+FRIEND_URL+'" target="_blank" rel="noopener"><img src="'+IMG+'" alt="加入好友解鎖完整名單"></a><a class="g-btn" href="'+FRIEND_URL+'" target="_blank" rel="noopener">＋ 加入 LINE 好友</a></div>';
   document.body.appendChild(ov);
   document.documentElement.style.overflow="hidden"; document.body.style.overflow="hidden";
 })();
