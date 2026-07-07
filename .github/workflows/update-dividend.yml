@@ -2,7 +2,8 @@ name: Update dividend data
 
 on:
   schedule:
-    - cron: '30 10 * * *'   # 每天 UTC 10:30 = 台灣時間 18:30（收盤後）
+    - cron: '30 0 * * *'    # 每天 UTC 00:30 = 台灣時間 08:30（早上：更新日期、汰除過期標的）
+    - cron: '30 10 * * *'   # 每天 UTC 10:30 = 台灣時間 18:30（收盤後：更新最新收盤價與殖利率）
   workflow_dispatch:          # 也可在 Actions 頁手動按「Run workflow」
 
 permissions:
