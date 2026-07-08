@@ -78,22 +78,23 @@ document.getElementById("showAdvCols").addEventListener("change",function(){ doc
 document.getElementById("advToggle").addEventListener("click",function(){ this.classList.toggle("open"); document.getElementById("advPanel").classList.toggle("open"); });
 document.getElementById("tabs").addEventListener("click",function(e){ var t=e.target.closest(".tab"); if(!t) return; document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("active");}); t.classList.add("active"); STATE.cat=t.getAttribute("data-cat"); applyFilters(); });
 document.querySelectorAll("#headRow th").forEach(function(th){ th.addEventListener("click",function(){ var k=th.getAttribute("data-key"); if(STATE.sortKey===k){STATE.sortDir*=-1;} else {STATE.sortKey=k; STATE.sortDir=(k==="stock_name"||k==="ex_sort")?1:-1;} sortView(); render(); }); });
-var DATA_API = "https://cdn.jsdelivr.net/gh/sherry90-hung/tcbs-dividend@main/data.json";
+var DATA_RAW="https://raw.githubusercontent.com/sherry90-hung/tcbs-dividend/main/data.json", DATA_CDN="https://cdn.jsdelivr.net/gh/sherry90-hung/tcbs-dividend@main/data.json";
 function _useBaked(){
   if(DATA&&DATA.records){ loadData(DATA); }
   else { document.getElementById("tbody").innerHTML='<tr><td colspan="7"><div class="empty"><b>尚未載入資料</b></div></td></tr>'; }
 }
-if(!DATA_API){ _useBaked(); }
-else {
-  fetch(DATA_API,{cache:"no-store"})
-    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
-    .then(function(j){
-      if(j&&j.records&&j.records.length){ loadData(j); }
-      else if(j&&j.data&&j.data.length){ loadData({updated:(j.data[0]&&j.data[0].updated)||"\u2014", records:j.data}); }
-      else { _useBaked(); }
-    })
-    .catch(_useBaked);
+function _feed(j){
+  if(j&&j.records&&j.records.length){ loadData(j); return true; }
+  if(j&&j.data&&j.data.length){ loadData({updated:(j.data[0]&&j.data[0].updated)||"\u2014", records:j.data}); return true; }
+  return false;
 }
+function _get(url,onfail){
+  fetch(url,{cache:"no-store"})
+    .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+    .then(function(j){ if(!_feed(j)) onfail(); })
+    .catch(onfail);
+}
+_get(DATA_RAW, function(){ _get(DATA_CDN, _useBaked); });
 
 
 /* ===== 加好友阻擋視窗（A方案：非好友才顯示；整張圖點擊→加好友，置中暗背景）===== */
