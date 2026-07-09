@@ -21,6 +21,11 @@ BWIBBU = "https://www.twse.com.tw/exchangeReport/BWIBBU_d?response=html&selectTy
 OUTPUT = Path(__file__).resolve().parent / "data.json"
 
 
+def _today_tw():
+    """用台灣時間(UTC+8)判斷「今天」，避免雲端伺服器用 UTC 導致清晨跑差一天。"""
+    return dt.datetime.now(dt.timezone(dt.timedelta(hours=8))).date()
+
+
 def fetch(url: str) -> str:
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html,*/*"})
     try:
@@ -92,7 +97,7 @@ def roc_to_md(s: str):
 def get_forecast():
     print("→ 下載除權除息預告表 ...")
     rows = parse_table(fetch(TWT48U))
-    today = dt.date.today().timetuple()[:3]
+    today = _today_tw().timetuple()[:3]
     out = []
     for d in rows:
         code = (col(d, "股票代號", "證券代號") or "").strip()
@@ -114,7 +119,7 @@ def get_forecast():
 
 def get_prices():
     print("→ 下載個股殖利率/股價（自動找最近交易日）...")
-    today = dt.date.today()
+    today = _today_tw()
     for back in range(0, 12):
         d = today - dt.timedelta(days=back)
         rows = parse_table(fetch(BWIBBU.format(date=d.strftime("%Y%m%d"))))
@@ -157,7 +162,7 @@ def main():
         return 1
     price = get_prices()
     records = build(forecast, price)
-    payload = {"updated": dt.date.today().strftime("%Y/%m/%d"), "records": records}
+    payload = {"updated": _today_tw().strftime("%Y/%m/%d"), "records": records}
     OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     n_yield = sum(1 for r in records if r["current_yield_value"] is not None)
     print("完成！共 %d 檔，其中 %d 檔已算出殖利率。已寫入 %s" % (len(records), n_yield, OUTPUT.name))
